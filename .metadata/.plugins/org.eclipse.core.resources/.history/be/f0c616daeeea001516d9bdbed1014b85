@@ -1,0 +1,33 @@
+'''
+Created on Mar 15, 2016
+
+@author: schackma
+'''
+
+class City(object):
+    '''
+    classdocs
+    '''
+    
+
+
+    def __init__(self, name):
+        '''
+        Constructor
+        '''
+        
+        self.name = name
+        self.neighbors = {
+                    "city/dist": [],
+                    "city/pheramone": []
+        }
+    
+        
+    def addNeighbor(self, num, dist):
+        self.neighbors[city/dist]append((num, dist))
+        return
+                          
+
+
+
+        

@@ -1,0 +1,21 @@
+'''
+Created on Mar 15, 2016
+
+@author: schackma
+'''
+
+class City(object):
+    '''
+    classdocs
+    '''
+    self.name
+    
+
+
+    def __init__(self, params):
+        '''
+        Constructor
+        '''
+        
+        self.name
+        

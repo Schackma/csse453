@@ -1,0 +1,22 @@
+'''
+Created on Mar 15, 2016
+
+@author: schackma
+'''
+
+
+
+def makeMap(fileName):
+    cityMap =[]
+    
+    mapFile = open(fileName)
+    line = mapFile.readline()
+    
+    while line != "":
+        print(mapFile.readline())
+        line = mapFile.readline()
+        
+    
+    
+    mapFile.close()
+    return cityMap

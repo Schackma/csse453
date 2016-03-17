@@ -1,0 +1,35 @@
+'''
+Created on Mar 15, 2016
+
+@author: schackma
+'''
+import City
+
+
+def makeMap(fileName):
+    cityMap = []
+    cityNames = []
+    
+    mapFile = open(fileName)
+    line = mapFile.readline()
+    
+    while line != "":
+        [city1, city2, dist] = line.split(" ")
+        if city1 not in cityNames:
+            cityNames.append(city1)
+            cityMap.append(City.City(city1))
+        
+        if city2 not in cityNames:
+            cityNames.append(city2)
+            cityMap.append(City.City(city2))
+        
+        tempCity = city1 in cityMap
+        tempCity.addNeighbor((city2, dist))
+        
+        tempCity = city2 in cityMap
+        tempCity.addNeighbor((city1, dist))
+        
+        line = mapFile.readline()
+        
+    mapFile.close()
+    return cityMap
