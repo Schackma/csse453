@@ -4,6 +4,7 @@ Created on Mar 15, 2016
 @author: schackma
 '''
 import City
+import random
 
 
 def readMap(fileName,rho,t0):
@@ -48,3 +49,20 @@ def readMap(fileName,rho,t0):
         
     mapFile.close()
     return [cityMap,paths]
+
+
+
+def makeMap(numCities,rho,t0):
+    cities = [City.city(i) for i in range(0,numCities)]
+    paths = []
+    random.seed(1)
+    for i in range(0,numCities):
+        for j in range(i+1,numCities):
+            city1 = cities[i]
+            city2 = cities[j]
+            newPath = City.path(random.randint(1,100),t0,rho)
+            paths.append(newPath)
+            city1.addNeighbor(city2,newPath)
+            city2.addNeighbor(city1,newPath)
+            
+    return [cities,paths]

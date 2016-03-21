@@ -38,7 +38,7 @@ class path(object):
         
         
     def decay(self):
-        self.pher *= (1-self.decayRate)
+        self.pher = self.pher*(1-self.decayRate)
             
 
         

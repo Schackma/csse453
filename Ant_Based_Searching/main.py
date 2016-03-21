@@ -5,49 +5,68 @@ Created on Mar 15, 2016
 '''
 import mapMaker
 import AS_Ant
+import random
+import time
 from copy import copy
 
+
+def preformTSP(numCities):
+    [cities,paths] = mapMaker.makeMap(numCities,rho,t0)
+    
+    bestLength = 99999999999
+    bestPath = []
+    iteration = -1
+    sameResult = 0;
+    
+    startTime = time.time()
+    
+    for i in range(0,numIterations):
+        ants = [AS_Ant.AS_Ant(cities, random.choice(cities),alpha,beta) for i in range (1, numAnts)]
+
+        while [ant for ant in ants if ant.isComplete()] ==[] and ants != []:
+            ants = [ant for ant in  ants if ant.travel()]
+        
+        if(ants ==[]):
+            continue
+        minAnt = min(ants, key=lambda path:path.length)
+        
+
+        
+        if abs(minAnt.length - bestLength)<5:
+            sameResult+=1
+        elif minAnt.length < bestLength:
+            bestLength = minAnt.length
+            bestPath = copy(minAnt.path)
+            iteration = i
+            sameResult = 0
+        
+        if sameResult == 5:
+            break;   
+    
+     
+#         print([city.name for city in ants[0].path])
+#         print(ants[0].length)
+        AS_Ant.updatePaths(ants,paths,Q,bestLength,bestPath,e)
+    print("number of cities: ",numCities)
+    print("time: ",time.time()-startTime)
+    print("best item found on iteration: ",iteration)
+    print("City path is:")
+    print([city.name for city in bestPath])
+    print("Length of path: ",bestLength)
 
 
 
 if __name__ == '__main__':
-    alpha = 1
-    beta = 5
-    numAnts = 200
-    Q = 275
+    alpha = 2
+    beta = 2
+    numAnts = 20
+    Q = 300
     rho = .5
-    numIterations = 100
+    numIterations = 50
     t0 = 10**-6
-    
-    [cities,paths] = mapMaker.readMap('maps/twelve.txt',rho,t0)
-    start_city = cities[0]
-    cities.remove(start_city)
-    
-    bestLength = 99999999999
-    bestPath = []
-    
-    
-    for i in range(0,numIterations):
-        ants = [AS_Ant.AS_Ant(cities, start_city,alpha,beta) for i in range (1, numAnts)]
+    e = 5
+    for j in range(10,101,10):
+        preformTSP(j)
 
-        while [ant for ant in ants if ant.isComplete()] ==[]:
-            ants = [ant for ant in  ants if ant.travel()]
-        
-        ants = sorted(ants, key=lambda path:path.length)
-        if ants[0].length < bestLength:
-            bestLength = ants[0].length
-            bestPath = copy(ants[0].path)
-    
-    
-    
-        print([city.name for city in bestPath])
-        print(bestLength)
-        AS_Ant.updatePaths(ants,paths,Q)
-    
-    
-    
     pass
-
-
-
 
