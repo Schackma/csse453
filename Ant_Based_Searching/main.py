@@ -4,31 +4,22 @@ Created on Mar 15, 2016
 @author: schackma
 '''
 import mapMaker
-from AS_Ant import AS_Ant
+import AS_Ant
 from copy import copy
 
 
-def updatePaths(ants,paths,Q):
-    [path.decay() for path in paths]
-    for ant in ants:
-        for i in range(0, len(ant.path)-2):
-            city1 = ant.path[i]
-            city2 = ant.path[i+1]
-            for [city, path] in city1.neighbors:
-                if city == city2:
-                    path.pher += Q/ant.length
-        
-    
-    return
+
 
 if __name__ == '__main__':
     alpha = 1
     beta = 5
     numAnts = 200
-    Q = 100
+    Q = 275
     rho = .5
     numIterations = 100
-    [cities,paths] = mapMaker.readMap('maps/twelve.txt',rho)
+    t0 = 10**-6
+    
+    [cities,paths] = mapMaker.readMap('maps/twelve.txt',rho,t0)
     start_city = cities[0]
     cities.remove(start_city)
     
@@ -37,7 +28,7 @@ if __name__ == '__main__':
     
     
     for i in range(0,numIterations):
-        ants = [AS_Ant(cities, start_city,alpha,beta) for i in range (1, numAnts)]
+        ants = [AS_Ant.AS_Ant(cities, start_city,alpha,beta) for i in range (1, numAnts)]
 
         while [ant for ant in ants if ant.isComplete()] ==[]:
             ants = [ant for ant in  ants if ant.travel()]
@@ -51,7 +42,7 @@ if __name__ == '__main__':
     
         print([city.name for city in bestPath])
         print(bestLength)
-        updatePaths(ants,paths,Q)
+        AS_Ant.updatePaths(ants,paths,Q)
     
     
     

@@ -6,7 +6,7 @@ Created on Mar 15, 2016
 import City
 
 
-def readMap(fileName,rho):
+def readMap(fileName,rho,t0):
     cityMap = []
     paths = []
     cityNames = []
@@ -19,7 +19,7 @@ def readMap(fileName,rho):
         city1 = int(city1)
         city2 = int(city2)
         dist = int(dist)
-        newPath = City.path(dist,1,rho)
+        newPath = City.path(dist,t0,rho)
         paths.append(newPath)
         
         # add the cities to the map if they were not visited before

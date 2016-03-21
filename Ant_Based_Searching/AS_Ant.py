@@ -76,4 +76,18 @@ class AS_Ant(object):
     def isComplete(self):
         return self.complete
     
+    
+def updatePaths(ants,paths,Q):
+    [path.decay() for path in paths]
+    for ant in ants:
+        for i in range(0, len(ant.path)-2):
+            city1 = ant.path[i]
+            city2 = ant.path[i+1]
+            for [city, path] in city1.neighbors:
+                if city == city2:
+                    path.pher += Q/ant.length
+        
+    
+    return
+    
 
