@@ -9,9 +9,20 @@ import random
 import time
 from copy import copy
 
+alpha = 1
+beta = 2
+numAnts = 50
+Q = 300
+rho = .5
+numIterations = 50
+t0 = 10**-6
+e = 4
 
-def preformTSP(numCities):
-    [cities,paths] = mapMaker.makeMap(numCities,rho,t0)
+
+
+def performTSP(numCities):
+#     [cities,paths] = mapMaker.makeMap(numCities,rho,t0)
+    [cities,paths] = mapMaker.readMap("./maps/thirtySparse.txt",rho,t0)
     
     bestLength = 99999999999
     bestPath = []
@@ -47,7 +58,7 @@ def preformTSP(numCities):
 #         print([city.name for city in ants[0].path])
 #         print(ants[0].length)
         AS_Ant.updatePaths(ants,paths,Q,bestLength,bestPath,e)
-    print("number of cities: ",numCities)
+    print("number of cities: ",len())
     print("time: ",time.time()-startTime)
     print("best item found on iteration: ",iteration)
     print("City path is:")
@@ -57,16 +68,6 @@ def preformTSP(numCities):
 
 
 if __name__ == '__main__':
-    alpha = 2
-    beta = 2
-    numAnts = 20
-    Q = 300
-    rho = .5
-    numIterations = 50
-    t0 = 10**-6
-    e = 5
-    for j in range(10,101,10):
-        preformTSP(j)
-
+    performTSP(80)
     pass
 
