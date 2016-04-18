@@ -26,8 +26,8 @@ classdef BOT < handle
             [obj.sizex,obj.sizey] = size(glmap);
             obj.map = zeros(obj.sizex,obj.sizey);
             obj.map(motherPos(2),motherPos(1)) = -1;
-            obj.map = [ones(obj.sizey,1),obj.map,ones(obj.sizey,1)];
-            obj.map = [ones(1,obj.sizex+2);obj.map;ones(1,obj.sizex+2)];
+            obj.map = [ones(obj.sizex,1),obj.map,ones(obj.sizex,1)];
+            obj.map = [ones(1,obj.sizey+2);obj.map;ones(1,obj.sizey+2)];
             obj.mode = obj.EXPLORE;
             obj.currentPos = pos+1;
             obj.globalPos = pos;

@@ -22,7 +22,7 @@ function varargout = simulation_runner(varargin)
 
 % Edit the above text to modify the response to help simulation_runner
 
-% Last Modified by GUIDE v2.5 17-Apr-2016 21:20:38
+% Last Modified by GUIDE v2.5 17-Apr-2016 23:11:19
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -207,3 +207,6 @@ function sleep_edit_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+function num_bots_edit_Callback(hObject, eventdata, handles)
+return;

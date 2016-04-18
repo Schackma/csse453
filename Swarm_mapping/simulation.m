@@ -27,8 +27,10 @@ classdef simulation < handle
             
             obj.background = zeros(size(obj.true_occupancy_grid));
             
+            obj.bot_list = [];
             for i = 1:obj.numBots
-                %add a bot to the bot list
+                bot = BOT(obj.mothership_loc,obj.mothership_loc,obj.true_occupancy_grid);
+                obj.bot_list = [obj.bot_list, bot];
             end
             
             obj.draw();
@@ -37,8 +39,7 @@ classdef simulation < handle
         function [] = updateBackground(obj)
           newFinds = [];
            for i = 1:obj.numBots
-               % access bot from obj.bots, then map = bot.map;
-               newFinds = [newFinds,bot.newFinds];
+               newFinds = [newFinds,obj.bot_list(i).newFinds];
                bot.newFinds = [];
            end
            for i = 1:size(newFinds,2);
@@ -48,10 +49,12 @@ classdef simulation < handle
         
         function [] = draw(obj)
            obj.updateBackground();
-           
-           img(:,:,1) = floor(255*(obj.numBots - obj.background)/obj.numBots);
-           img(:,:,2) = 255 - img(:,:,1);
-           img(:,:,3) = 0;
+           blackIndicies = find(obj.true_occupancy_grid == 0);          
+           r = floor(255*(obj.numBots - obj.background)/obj.numBots);
+           r(blackIndicies) = 0;
+           g = 255 - r(:,:,1);
+           g(blackIndicies) = 0;
+           img(:,:,1) = r; img(:,:,2) = g; img(:,:,3) = 0;           
            
            img = insertShape(img, 'FilledCircle', [obj.mothership_loc(1) obj.mothership_loc(2) 5], 'Color', [0,0,255]);
            imshow(img, 'parent',obj.display_axes);
@@ -61,9 +64,9 @@ classdef simulation < handle
         function [] = step(obj)
             for i = 1:obj.stepSize
                 for j = 1:obj.numBots
-                    % access bot from obj.bots, then call bot.move();                   
+                    bot_list(j).move();
                 end % bot looping
-                obj.draw(true_occupancy_grid);
+                obj.draw();
             end % step looping            
         end % step functoin
     end % method definitions
