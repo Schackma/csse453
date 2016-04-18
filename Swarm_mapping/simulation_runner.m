@@ -22,7 +22,7 @@ function varargout = simulation_runner(varargin)
 
 % Edit the above text to modify the response to help simulation_runner
 
-% Last Modified by GUIDE v2.5 17-Apr-2016 18:50:24
+% Last Modified by GUIDE v2.5 17-Apr-2016 19:56:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,7 +55,11 @@ function simulation_runner_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for simulation_runner
 handles.output = hObject;
 
-dispImg(imread(get(handles.map_path_edit,'string')),handles);
+handles.user.background = imread(get(handles.map_path_edit,'string'));
+handles.user.true_occupancy_grid = find(handles.user.background==0);
+handles.user.mothership = get(handles.start_loc_edit,'string');
+handles.user.numBots = get(handles.num_bots_edit,'string');
+dispImg(handles);
 % Update handles structure
 guidata(hObject, handles);
 
@@ -75,18 +79,18 @@ varargout{1} = handles.output;
 
 
 
-function set_num_bots_edit_Callback(hObject, eventdata, handles)
-% hObject    handle to set_num_bots_edit (see GCBO)
+function num_bots_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to num_bots_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of set_num_bots_edit as text
-%        str2double(get(hObject,'String')) returns contents of set_num_bots_edit as a double
-
+% Hints: get(hObject,'String') returns contents of num_bots_edit as text
+%        str2double(get(hObject,'String')) returns contents of num_bots_edit as a double
+handles.user.numBots = get(handles.num_bots_edit,'string');
 
 % --- Executes during object creation, after setting all properties.
-function set_num_bots_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to set_num_bots_edit (see GCBO)
+function num_bots_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to num_bots_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -105,7 +109,9 @@ function map_path_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of map_path_edit as text
 %        str2double(get(hObject,'String')) returns contents of map_path_edit as a double
-
+handles.user.background = imread(get(handles.map_path_edit,'string'));
+handles.user.true_occupancy_grid = find(handles.user.background==0);
+dispImg(handles);
 
 % --- Executes during object creation, after setting all properties.
 function map_path_edit_CreateFcn(hObject, eventdata, handles)
@@ -131,5 +137,28 @@ if isequal(fn,0) || isequal(pn,0)
 end
 completePath = strcat(pn,fn);
 set(handles.map_path_edit,'string',completePath);
-dispImg(imread(completePath),handles);
+handles.user.background = imread(completePath);
+dispImg(handles);
 guidata(hObject, handles);
+
+function start_loc_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to start_loc_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of start_loc_edit as text
+%        str2double(get(hObject,'String')) returns contents of start_loc_edit as a double
+handles.user.mothership = get(handles.start_loc_edit,'string');
+dispImg(handles);
+
+% --- Executes during object creation, after setting all properties.
+function start_loc_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to start_loc_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
