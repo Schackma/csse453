@@ -22,7 +22,7 @@ function varargout = simulation_runner(varargin)
 
 % Edit the above text to modify the response to help simulation_runner
 
-% Last Modified by GUIDE v2.5 17-Apr-2016 19:56:44
+% Last Modified by GUIDE v2.5 17-Apr-2016 21:20:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -43,7 +43,6 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-
 % --- Executes just before simulation_runner is made visible.
 function simulation_runner_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
@@ -54,11 +53,7 @@ function simulation_runner_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for simulation_runner
 handles.output = hObject;
-
-handles.user.background = imread(get(handles.map_path_edit,'string'));
-handles.user.true_occupancy_grid = find(handles.user.background==0);
-handles.user.mothership = get(handles.start_loc_edit,'string');
-handles.user.numBots = get(handles.num_bots_edit,'string');
+handles.user.simulation = simulation(handles); %dummy variable for typing
 dispImg(handles);
 % Update handles structure
 guidata(hObject, handles);
@@ -77,17 +72,6 @@ function varargout = simulation_runner_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
-
-function num_bots_edit_Callback(hObject, eventdata, handles)
-% hObject    handle to num_bots_edit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of num_bots_edit as text
-%        str2double(get(hObject,'String')) returns contents of num_bots_edit as a double
-handles.user.numBots = get(handles.num_bots_edit,'string');
-
 % --- Executes during object creation, after setting all properties.
 function num_bots_edit_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to num_bots_edit (see GCBO)
@@ -100,8 +84,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
-
 function map_path_edit_Callback(hObject, eventdata, handles)
 % hObject    handle to map_path_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -109,8 +91,6 @@ function map_path_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of map_path_edit as text
 %        str2double(get(hObject,'String')) returns contents of map_path_edit as a double
-handles.user.background = imread(get(handles.map_path_edit,'string'));
-handles.user.true_occupancy_grid = find(handles.user.background==0);
 dispImg(handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -137,7 +117,6 @@ if isequal(fn,0) || isequal(pn,0)
 end
 completePath = strcat(pn,fn);
 set(handles.map_path_edit,'string',completePath);
-handles.user.background = imread(completePath);
 dispImg(handles);
 guidata(hObject, handles);
 
@@ -148,12 +127,78 @@ function start_loc_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of start_loc_edit as text
 %        str2double(get(hObject,'String')) returns contents of start_loc_edit as a double
-handles.user.mothership = get(handles.start_loc_edit,'string');
 dispImg(handles);
 
 % --- Executes during object creation, after setting all properties.
 function start_loc_edit_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to start_loc_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+% --- Executes on button press in start_button.
+function start_button_Callback(hObject, eventdata, handles)
+% hObject    hnandle to start_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with hadles and user data (see GUIDATA)
+
+set(handles.start_button, 'enable', 'off');
+set(handles.num_bots_edit, 'enable', 'off');
+set(handles.map_path_edit, 'enable', 'off');
+set(handles.start_loc_edit, 'enable', 'off');
+set(handles.map_path_pushbutton, 'enable', 'off');
+
+set(handles.step_pushbutton, 'enable', 'on');
+set(handles.step_edit, 'enable', 'on');
+set(handles.sleep_edit, 'enable', 'on');
+
+handles.user.simulation = simulation(handles);
+
+function step_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to step_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of step_edit as text
+%        str2double(get(hObject,'String')) returns contents of step_edit as a double
+handles.user.simulation.stepSize = str2num(get(hObject,'string'));
+
+% --- Executes during object creation, after setting all properties.
+function step_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to step_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+% --- Executes on button press in step_pushbutton.
+function step_pushbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to step_pushbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.user.simulation.step();
+
+function sleep_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to sleep_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of sleep_edit as text
+%        str2double(get(hObject,'String')) returns contents of sleep_edit as a double
+handles.user.simulation.stepDelay = str2num(get(hObject,'string'));
+
+% --- Executes during object creation, after setting all properties.
+function sleep_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sleep_edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
