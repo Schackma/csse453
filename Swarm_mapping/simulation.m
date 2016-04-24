@@ -40,10 +40,10 @@ classdef simulation < handle
           newFinds = [];
            for i = 1:obj.numBots
                newFinds = [newFinds,obj.bot_list(i).newFinds];
-               bot.newFinds = [];
+               obj.bot_list(i).newFinds = [];
            end
            for i = 1:size(newFinds,2);
-              background(newFinds(1,i),newFinds(2,i)) = background(newFinds(1,i),newFinds(2,i)) + 1;
+              obj.background(newFinds(1,i),newFinds(2,i)) = obj.background(newFinds(1,i),newFinds(2,i)) + 1;
            end 
         end
         

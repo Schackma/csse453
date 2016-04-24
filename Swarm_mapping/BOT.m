@@ -214,32 +214,36 @@ classdef BOT < handle
             if(bounds(1))
                 if obj.globalMap(gly,glx-1)==1
                     obj.map(y,x-1) = 99;
-                elseif obj.map(y,x-1) ~=-1
+                elseif obj.map(y,x-1) ~=-1&& obj.map(y,x-1)~=1
                     obj.map(y,x-1) = 1;
+                    obj.newFinds = [obj.newFinds,[y;x-1]];
                 end
             end
             
             if(bounds(2))
                 if obj.globalMap(gly,glx+1)==1
                     obj.map(y,x+1) = 99;
-                elseif obj.map(y,x+1) ~=-1
+                elseif obj.map(y,x+1) ~=-1 && obj.map(y,x+1)~=1
                     obj.map(y,x+1) = 1;
+                    obj.newFinds = [obj.newFinds,[y;x+1]];
                 end                
             end
             
             if(bounds(3))
                 if obj.globalMap(gly-1,glx)==1
                     obj.map(y-1,x) = 99;
-                elseif obj.map(y-1,x) ~=-1
+                elseif obj.map(y-1,x) ~=-1&& obj.map(y-1,x)~=1
                     obj.map(y-1,x) = 1;
+                    obj.newFinds = [obj.newFinds,[y-1;x]];
                 end
             end
             
             if(bounds(4)) 
                 if obj.globalMap(gly+1,glx)==1
                     obj.map(y+1,x) = 99;
-                elseif obj.map(y+1,x) ~=-1
+                elseif obj.map(y+1,x) ~=-1 && obj.map(y+1,x)~=1
                     obj.map(y+1,x) = 1;
+                    obj.newFinds = [obj.newFinds,[y+1;x]];
                 end
             end     
         end
