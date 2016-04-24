@@ -49,7 +49,7 @@ classdef simulation < handle
         
         function [] = draw(obj)
            obj.updateBackground();
-           blackIndicies = find(obj.true_occupancy_grid == 0);          
+           blackIndicies = find(obj.true_occupancy_grid == 1);          
            r = floor(255*(obj.numBots - obj.background)/obj.numBots);
            r(blackIndicies) = 0;
            g = 255 - r(:,:,1);
