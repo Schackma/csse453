@@ -3,18 +3,18 @@ classdef BOT < handle
     
     properties
         map;
-        mode;
         currentPos;
+        sizex; sizey;
+        
         broadcastMessage;
-        wayHome;
-        sizex;
-        sizey;
         newFinds=[];
-        globalPos; %BOT's actual position not known by the BOT but used for simulation
-        globalMap; %map not know by the BOT
+        
+        mode;
         EXPLORE = 1;
         INFORM = 2;
         RETURN = 3;
+        
+        wayHome;
         UP = 1;
         DOWN = 2;
         LEFT = 3;
@@ -22,20 +22,16 @@ classdef BOT < handle
     end
     
     methods
-        function obj = BOT(pos,motherPos,glmap)
-            [obj.sizex,obj.sizey] = size(glmap);
+        function obj = BOT(pos,motherPos,toss_map)
+            [obj.sizex,obj.sizey] = size(toss_map);
             obj.map = zeros(obj.sizex,obj.sizey);
             obj.map(motherPos(2),motherPos(1)) = -1;
-%             obj.map = [ones(obj.sizex,1),obj.map,ones(obj.sizex,1)];
-%             obj.map = [ones(1,obj.sizey+2);obj.map;ones(1,obj.sizey+2)];
             obj.mode = obj.EXPLORE;
             obj.currentPos = pos;
-            obj.globalPos = pos;
-            obj.globalMap = glmap;
-            obj.checkSurroundings()
+            obj.checkSurroundings(toss_map);
        end
         
-        function obj = move(obj)
+        function obj = move(obj,globalMap)
             switch obj.mode
                 case obj.EXPLORE
                     deltaPos = obj.findClosestPoint();
@@ -60,8 +56,7 @@ classdef BOT < handle
                     obj.broadcastMessage = 'MAP_COMPLETE';
             end
             obj.currentPos =obj.currentPos+deltaPos;
-            obj.globalPos = obj.globalPos+deltaPos;
-            obj.checkSurroundings();
+            obj.checkSurroundings(globalMap);
         end
         
         function output = findClosestPoint(obj)
@@ -209,14 +204,12 @@ classdef BOT < handle
             
         end
         
-        function obj = checkSurroundings(obj)
-            glx = obj.globalPos(1);
-            gly = obj.globalPos(2);
+        function obj = checkSurroundings(obj,globalMap)
             x = obj.currentPos(1);
             y = obj.currentPos(2);
             bounds = obj.checkBoundaries(x,y);
             if(bounds(1))
-                if obj.globalMap(gly,glx-1)==1
+                if globalMap(y,x-1)==1
                     obj.map(y,x-1) = 99;
                 elseif obj.map(y,x-1) ~=-1&& obj.map(y,x-1)~=1
                     obj.map(y,x-1) = 1;
@@ -225,7 +218,7 @@ classdef BOT < handle
             end
             
             if(bounds(2))
-                if obj.globalMap(gly,glx+1)==1
+                if globalMap(y,x+1)==1
                     obj.map(y,x+1) = 99;
                 elseif obj.map(y,x+1) ~=-1 && obj.map(y,x+1)~=1
                     obj.map(y,x+1) = 1;
@@ -234,7 +227,7 @@ classdef BOT < handle
             end
             
             if(bounds(3))
-                if obj.globalMap(gly-1,glx)==1
+                if globalMap(y-1,x)==1
                     obj.map(y-1,x) = 99;
                 elseif obj.map(y-1,x) ~=-1&& obj.map(y-1,x)~=1
                     obj.map(y-1,x) = 1;
@@ -243,7 +236,7 @@ classdef BOT < handle
             end
             
             if(bounds(4)) 
-                if obj.globalMap(gly+1,glx)==1
+                if globalMap(y+1,x)==1
                     obj.map(y+1,x) = 99;
                 elseif obj.map(y+1,x) ~=-1 && obj.map(y+1,x)~=1
                     obj.map(y+1,x) = 1;

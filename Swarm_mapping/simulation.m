@@ -64,7 +64,7 @@ classdef simulation < handle
         function [] = step(obj)
             for i = 1:obj.stepSize
                 for j = 1:obj.numBots
-                    obj.bot_list(j).move();
+                    obj.bot_list(j).move(obj.true_occupancy_grid);
                 end % bot looping
                 obj.draw();
                 i
