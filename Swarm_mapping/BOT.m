@@ -26,10 +26,10 @@ classdef BOT < handle
             [obj.sizex,obj.sizey] = size(glmap);
             obj.map = zeros(obj.sizex,obj.sizey);
             obj.map(motherPos(2),motherPos(1)) = -1;
-            obj.map = [ones(obj.sizex,1),obj.map,ones(obj.sizex,1)];
-            obj.map = [ones(1,obj.sizey+2);obj.map;ones(1,obj.sizey+2)];
+%             obj.map = [ones(obj.sizex,1),obj.map,ones(obj.sizex,1)];
+%             obj.map = [ones(1,obj.sizey+2);obj.map;ones(1,obj.sizey+2)];
             obj.mode = obj.EXPLORE;
-            obj.currentPos = pos+1;
+            obj.currentPos = pos;
             obj.globalPos = pos;
             obj.globalMap = glmap;
             obj.checkSurroundings()
@@ -210,30 +210,59 @@ classdef BOT < handle
             gly = obj.globalPos(2);
             x = obj.currentPos(1);
             y = obj.currentPos(2);
-            if obj.globalMap(gly+1,glx)==1
-                obj.map(y+1,x) = 99;
-            elseif obj.map(y+1,x) ~=-1
-                obj.map(y+1,x) = 1;
+            bounds = obj.checkBoundaries();
+            if(bounds(1))
+                if obj.globalMap(gly,glx-1)==1
+                    obj.map(y,x-1) = 99;
+                elseif obj.map(y,x-1) ~=-1
+                    obj.map(y,x-1) = 1;
+                end
             end
             
-            if obj.globalMap(gly-1,glx)==1
-                obj.map(y-1,x) = 99;
-            elseif obj.map(y-1,x) ~=-1
-                obj.map(y-1,x) = 1;
+            if(bounds(2))
+                if obj.globalMap(gly,glx+1)==1
+                    obj.map(y,x+1) = 99;
+                elseif obj.map(y,x+1) ~=-1
+                    obj.map(y,x+1) = 1;
+                end                
             end
             
-            if obj.globalMap(gly,glx+1)==1
-                obj.map(y,x+1) = 99;
-            elseif obj.map(y,x+1) ~=-1
-                obj.map(y,x+1) = 1;
+            if(bounds(3))
+                if obj.globalMap(gly-1,glx)==1
+                    obj.map(y-1,x) = 99;
+                elseif obj.map(y-1,x) ~=-1
+                    obj.map(y-1,x) = 1;
+                end
             end
             
-            if obj.globalMap(gly,glx-1)==1
-                obj.map(y,x-1) = 99;
-            elseif obj.map(y,x-1) ~=-1
-                obj.map(y,x-1) = 1;
-            end
+            if(bounds(4)) 
+                if obj.globalMap(gly+1,glx)==1
+                    obj.map(y+1,x) = 99;
+                elseif obj.map(y+1,x) ~=-1
+                    obj.map(y+1,x) = 1;
+                end
+            end     
         end
+        
+        function bounds = checkBoundaries(obj)
+            bounds = [0, 0, 0, 0];
+            x = obj.currentPos(1);
+            y = obj.currentPos(2);
+            if(x-1 >0)
+                bounds(1) = 1;
+            end
+            if(x+1 < obj.sizex)
+                bounds(2) = 1;
+            end
+            if(y-1 > 0)
+                bounds(3) = 1;
+            end
+            if(y+1 < obj.sizey)
+                bounds(4) = 1;
+            end
+            
+        end
+        
     end
 end
 

@@ -16,14 +16,14 @@ classdef simulation < handle
         function obj = simulation(handles)       
             obj.mothership_loc = str2num(get(handles.start_loc_edit,'string'));
             obj.stepSize = str2num(get(handles.step_edit,'string'));
-            obj.stepSize = str2num(get(handles.sleep_edit,'string'));
+            obj.stepDelay = str2num(get(handles.sleep_edit,'string'));
             obj.numBots = str2num(get(handles.num_bots_edit,'string'));
             obj.display_axes = handles.display_axes;
             
             img = imread(get(handles.map_path_edit,'string'));
             img = rgb2gray(img);
             obj.true_occupancy_grid = ones(size(img));
-            obj.true_occupancy_grid(find(img == 0)) = 0;
+            obj.true_occupancy_grid(find(img > 0)) = 0;
             
             obj.background = zeros(size(obj.true_occupancy_grid));
             
