@@ -74,15 +74,17 @@ classdef BOT < handle
             dx = 0;
             dy = 0;
             currentPoint = obj.map(y,x);
+            i=0;
             while currentPoint ~=0
-                if y+1<=obj.sizey && obj.map(y+1,x)~=99 && tempMap(y+1,x) ~=-1
+                bounds = obj.checkBoundaries(x,y);
+                if bounds(4) && obj.map(y+1,x)~=99 && tempMap(y+1,x) ~=-1
                     if initial
                         possPoints = [possPoints(:,1),[y+1;x;obj.DOWN],possPoints(:,2:end)];
                     else
                         possPoints = [possPoints(:,1),[y+1;x;currentDirection],possPoints(:,2:end)];
                     end
                 end
-                if y-1>0 && obj.map(y-1,x)~=99 && tempMap(y-1,x) ~=-1
+                if bounds(3) && obj.map(y-1,x)~=99 && tempMap(y-1,x) ~=-1
                     if initial
                         possPoints = [possPoints(:,1),[y-1;x;obj.UP],possPoints(:,2:end)];
                     else
@@ -90,14 +92,14 @@ classdef BOT < handle
                     end
                    
                 end
-                if x+1<=obj.sizex && obj.map(y,x+1)~=99&& tempMap(y,x+1) ~=-1
+                if bounds(2) && obj.map(y,x+1)~=99&& tempMap(y,x+1) ~=-1
                     if initial
                         possPoints = [possPoints(:,1),[y;x+1;obj.RIGHT],possPoints(:,2:end)];
                     else
                         possPoints = [possPoints(:,1),[y;x+1;currentDirection],possPoints(:,2:end)];
                     end
                 end
-                if x-1>0 && obj.map(y,x-1)~=99&& tempMap(y,x-1) ~=-1
+                if bounds(1) && obj.map(y,x-1)~=99&& tempMap(y,x-1) ~=-1
                     if initial
                         possPoints = [possPoints(:,1),[y;x-1;obj.LEFT],possPoints(:,2:end)];
                     else
@@ -114,9 +116,10 @@ classdef BOT < handle
                     break
                 end
                 currentPoint = obj.map(y,x);
-                
                 possPoints = possPoints(:,1:end-1);
+                i=i+1;
             end
+            
             switch currentDirection
                 case obj.UP
                     dx = 0;
@@ -149,16 +152,17 @@ classdef BOT < handle
             tempMap = obj.map;
             tempMap(y,x)=-1;
             while currentPoint ~=-1
-               if y+1<obj.sizey && obj.map(y+1,x)~=99 && tempMap(y+1,x) ~=2
+                bounds = obj.checkBoundaries(x,y);
+               if bounds(4) && obj.map(y+1,x)~=99 && tempMap(y+1,x) ~=2
                    possPoints = [possPoints(:,1),[y+1;x;obj.DOWN],possPoints(:,2:end)];
                end
-               if y-1>0 && obj.map(y-1,x)~=99 && tempMap(y-1,x) ~=2
+               if bounds(3) && obj.map(y-1,x)~=99 && tempMap(y-1,x) ~=2
                    possPoints = [possPoints(:,1),[y-1;x;obj.UP],possPoints(:,2:end)];
                end
-               if x+1<obj.sizex &&obj.map(y,x+1)~=99 && tempMap(y,x+1) ~=2
+               if bounds(2) &&obj.map(y,x+1)~=99 && tempMap(y,x+1) ~=2
                    possPoints = [possPoints(:,1),[y;x+1;obj.RIGHT],possPoints(:,2:end)];
                end
-               if x-1>0 && obj.map(y,x-1)~=99&& tempMap(y,x-1) ~=2
+               if bounds(1) && obj.map(y,x-1)~=99&& tempMap(y,x-1) ~=2
                    possPoints = [possPoints(:,1),[y;x-1;obj.LEFT],possPoints(:,2:end)];
                end
                if tempMap(x,y) ~=1
