@@ -64,7 +64,7 @@ classdef simulation < handle
         function [] = step(obj)
             for i = 1:obj.stepSize
                 for j = 1:obj.numBots
-                    bot_list(j).move();
+                    obj.bot_list(j).move();
                 end % bot looping
                 obj.draw();
             end % step looping            

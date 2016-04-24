@@ -33,7 +33,7 @@ classdef BOT < handle
             obj.globalPos = pos;
             obj.globalMap = glmap;
             obj.checkSurroundings()
-        end
+       end
         
         function obj = move(obj)
             switch obj.mode
