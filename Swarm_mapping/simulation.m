@@ -67,6 +67,8 @@ classdef simulation < handle
                     obj.bot_list(j).move();
                 end % bot looping
                 obj.draw();
+                i
+                drawnow;
             end % step looping            
         end % step functoin
     end % method definitions

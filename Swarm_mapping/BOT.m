@@ -61,7 +61,7 @@ classdef BOT < handle
             end
             obj.currentPos =obj.currentPos+deltaPos;
             obj.globalPos = obj.globalPos+deltaPos;
-            obj.checkSurroundings()
+            obj.checkSurroundings();
         end
         
         function output = findClosestPoint(obj)
@@ -210,7 +210,7 @@ classdef BOT < handle
             gly = obj.globalPos(2);
             x = obj.currentPos(1);
             y = obj.currentPos(2);
-            bounds = obj.checkBoundaries();
+            bounds = obj.checkBoundaries(x,y);
             if(bounds(1))
                 if obj.globalMap(gly,glx-1)==1
                     obj.map(y,x-1) = 99;
@@ -248,10 +248,8 @@ classdef BOT < handle
             end     
         end
         
-        function bounds = checkBoundaries(obj)
+        function bounds = checkBoundaries(obj,x,y)
             bounds = [0, 0, 0, 0];
-            x = obj.currentPos(1);
-            y = obj.currentPos(2);
             if(x-1 >0)
                 bounds(1) = 1;
             end
