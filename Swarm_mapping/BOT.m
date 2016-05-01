@@ -333,3 +333,27 @@ classdef BOT < handle
     end
 end
 
+% intersect(bot1,bot2)
+% new_map = bot1.map+bot2.map;
+% new_map(find(new_map > 0)) = 1;
+% new_map(find(new_map < 0)) = -1;
+% 
+% [rowIs colIs] = find(abs(bot1.map)-abs(new_map) ~= 0));
+% bot1.newFinds = [bot1.newFinds, [rowIs' ; colIs']];
+% bot1.map = new_map;
+% 
+% [rowIs colIs] = find(abs(bot2.map)-abs(new_map) ~= 0));
+% bot2.newFinds = [bot2.newFinds, [rowIs' ; colIs']];
+% bot2.map = new_map;
+% end
+% 
+% communicate(botIndex)
+% for i = 1:size(numBots,2)
+%     if(botDist(botIndex,i))
+%         intersect(bot1,bot2);
+%     end
+% end
+% 
+% botDist(i1,i2)
+%     return com_range > sqrt(sum((i1.currentPos-i2.currentPos).^2));
+% end
