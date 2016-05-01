@@ -6,6 +6,7 @@ classdef BOT < handle
         currentPos;
         sizex; sizey;
         goalPos;
+        com_range = 5;
         
 
         wall = 1;
@@ -37,7 +38,7 @@ classdef BOT < handle
             obj.checkSurroundings(toss_map);
        end
         
-        function obj = move(obj,globalMap)
+        function obj = move(obj,globalMap,botList)
             switch obj.mode
                 case obj.EXPLORE
                     obj.broadcastMessage = 'SEARCHING';
@@ -69,8 +70,29 @@ classdef BOT < handle
             end
             obj.currentPos =obj.currentPos+deltaPos;
             obj.checkSurroundings(globalMap);
+            obj.broadcast(botList);
         end
         
+        function broadcast(obj,botList)
+            for i = 1:size(botList,2)
+                if(botList(i) ~=obj && obj.dist(botList(i).currentPos))
+                new_map = obj.map+botList(i).map;
+                new_map(new_map > 0) = 1;
+                new_map(new_map < 0) = -1;
+                [rowIs colIs] = find(abs(obj.map)-abs(new_map) ~= 0);
+                obj.newFinds = [obj.newFinds, [rowIs' ; colIs']];
+                obj.map = new_map;
+                [rowIs colIs] = find(abs(botList(i).map)-abs(new_map) ~= 0);
+                botList(i).newFinds = [botList(i).newFinds, [rowIs' ; colIs']];
+                botList(i).map = new_map;
+                end
+            end
+        end
+        
+        function output = dist(obj,otherPos)
+            output = obj.com_range > sqrt(sum((obj.currentPos-otherPos).^2));
+        end
+
 %         function output = findClosestPoint(obj)
 %             x = obj.currentPos(1);
 %             y = obj.currentPos(2);
@@ -332,28 +354,3 @@ classdef BOT < handle
         
     end
 end
-
-% intersect(bot1,bot2)
-% new_map = bot1.map+bot2.map;
-% new_map(find(new_map > 0)) = 1;
-% new_map(find(new_map < 0)) = -1;
-% 
-% [rowIs colIs] = find(abs(bot1.map)-abs(new_map) ~= 0));
-% bot1.newFinds = [bot1.newFinds, [rowIs' ; colIs']];
-% bot1.map = new_map;
-% 
-% [rowIs colIs] = find(abs(bot2.map)-abs(new_map) ~= 0));
-% bot2.newFinds = [bot2.newFinds, [rowIs' ; colIs']];
-% bot2.map = new_map;
-% end
-% 
-% communicate(botIndex)
-% for i = 1:size(numBots,2)
-%     if(botDist(botIndex,i))
-%         intersect(bot1,bot2);
-%     end
-% end
-% 
-% botDist(i1,i2)
-%     return com_range > sqrt(sum((i1.currentPos-i2.currentPos).^2));
-% end
