@@ -29,7 +29,7 @@ classdef BOT < handle
     
     methods
         function obj = BOT(pos,motherPos,toss_map)
-            [obj.sizex,obj.sizey] = size(toss_map);
+            [obj.sizey,obj.sizex] = size(toss_map);
             obj.map = zeros(obj.sizex,obj.sizey);
             obj.map(motherPos(2),motherPos(1)) = -1;
             obj.mode = obj.EXPLORE;
@@ -145,6 +145,7 @@ classdef BOT < handle
 %             end
 %             output = [dx,dy];
 %         end
+
         function output = findPath(obj)
             currx = obj.currentPos(1);
             curry = obj.currentPos(2);
