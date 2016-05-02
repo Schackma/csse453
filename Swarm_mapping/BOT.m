@@ -96,10 +96,10 @@ classdef BOT < handle
         function findPath(obj)
             tempMap = obj.map; tempMap(obj.currentPos(1),obj.currentPos(2)) = obj.wall;
             
-            startNode = {}; startNode.pos = [obj.currentPos(1),obj.currentPos(2)]; startNode.dirs = [];
+            startNode = {}; startNode.pos = [obj.currentPos(1),obj.currentPos(2)]; startNode.dirs = []; startNode.finished = 0;
             nodes = startNode;
                         
-            while tempMap(nodes(1).pos(1),nodes(1).pos(2)) ~=obj.unexplored
+            while ~nodes(1).finished
               r = nodes(1).pos(1); c = nodes(1).pos(2); tempMap(r,c) = obj.wall; %set iteration vars
               [nodes,tempMap] = obj.addPointsToQueue([r,c],nodes,tempMap);
               nodes = nodes(2:size(nodes,2)); %shrink nodes by 1
@@ -119,6 +119,13 @@ classdef BOT < handle
                if bounds(i)
                     if tempMap(pointsToCheck(i,1),pointsToCheck(i,2)) ~= obj.wall
                         toAdd = {};
+                        if tempMap(pointsToCheck(i,1),pointsToCheck(i,2)) == obj.unexplored
+                            toAdd.finished = 1;
+                        else
+                            toAdd.finished = 0;
+                        end
+                        tempMap(pointsToCheck(i,1),pointsToCheck(i,2)) = obj.wall;
+
                         toAdd.pos = pointsToCheck(i,:);
                         toAdd.dirs = [nodes(1).dirs, i];
                         nodes = [nodes,toAdd];
