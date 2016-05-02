@@ -158,6 +158,7 @@ set(handles.step_edit, 'enable', 'on');
 set(handles.sleep_edit, 'enable', 'on');
 
 handles.user.simulation = simulation(handles);
+guidata(hObject, handles);
 
 function step_edit_Callback(hObject, eventdata, handles)
 % hObject    handle to step_edit (see GCBO)

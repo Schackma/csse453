@@ -6,6 +6,7 @@ classdef BOT < handle
         rows; cols;
         goalPos;
         map;
+        com_range = 5;
         
         wall = 1;
         unexplored = 0;
@@ -39,7 +40,7 @@ classdef BOT < handle
             obj.checkSurroundings(toss_map);
        end
         
-        function obj = move(obj,globalMap)
+        function obj = move(obj,globalMap,botList)
             switch obj.mode
                 case obj.EXPLORE
                     obj.broadcastMessage = 'SEARCHING';
@@ -69,9 +70,30 @@ classdef BOT < handle
             end
             obj.moveWay(stepDir);
             obj.checkSurroundings(globalMap);
+            obj.broadcast(botList);
+        end
+        
+        function broadcast(obj,botList)
+            for i = 1:size(botList,2)
+                if(botList(i) ~=obj && obj.dist(botList(i).currentPos))
+                new_map = obj.map+botList(i).map;
+                new_map(new_map > 0) = 1;
+                new_map(new_map < 0) = -1;
+                [rowIs colIs] = find(abs(obj.map)-abs(new_map) ~= 0);
+                obj.newFinds = [obj.newFinds, [rowIs' ; colIs']];
+                obj.map = new_map;
+                [rowIs colIs] = find(abs(botList(i).map)-abs(new_map) ~= 0);
+                botList(i).newFinds = [botList(i).newFinds, [rowIs' ; colIs']];
+                botList(i).map = new_map;
+                end
+            end
+        end
+        
+        function output = dist(obj,otherPos)
+            output = obj.com_range > sqrt(sum((obj.currentPos-otherPos).^2));
         end
 
-        function output = findPath(obj)
+        function findPath(obj)
             tempMap = obj.map; tempMap(obj.currentPos(1),obj.currentPos(2)) = obj.wall;
             
             startNode = {}; startNode.pos = [obj.currentPos(1),obj.currentPos(2)]; startNode.dirs = [];
@@ -198,7 +220,7 @@ classdef BOT < handle
                        obj.map(pointsToCheck(i,1),pointsToCheck(i,2)) = obj.wall;
                    else
                        obj.map(pointsToCheck(i,1),pointsToCheck(i,2)) = obj.visitedPoint;
-                       obj.newFinds = [obj.newFinds; pointsToCheck(i,:)];
+                       obj.newFinds = [obj.newFinds, pointsToCheck(i,:)'];
                    end
                end
             end
