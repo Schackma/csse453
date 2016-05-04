@@ -34,7 +34,7 @@ classdef BOT < handle
             obj.map = zeros(obj.rows,obj.cols);
             obj.mode = obj.EXPLORE;
 
-            obj.motherPos = [motherPos(2),motherPos(1)];
+            obj.motherPos =motherPos;
             obj.currentPos = [pos(2), pos(1)];
             
             obj.checkSurroundings(toss_map);
@@ -47,8 +47,9 @@ classdef BOT < handle
                     if isempty(obj.path)
                         obj.findPath();
                     end
+                    [row,col] = size(obj.path);
                     stepDir = obj.path(1);
-                    obj.path = obj.path(2:end,:);
+                    obj.path = obj.path(2:end);
                 case obj.INFORM
                     if isempty(obj.path)
                         deltaPos = obj.findPathHome();
@@ -61,7 +62,7 @@ classdef BOT < handle
                 case obj.RETURN
                     size(obj.path)
                     if isempty(obj.path)
-                        deltaPos = obj.findPathHome();
+                        fprintf('made it home\n');
                     else
                         deltaPos = obj.path(1,:);
                         obj.path = obj.path(2:end,:);
@@ -104,11 +105,31 @@ classdef BOT < handle
               [nodes,tempMap] = obj.addPointsToQueue([r,c],nodes,tempMap);
               nodes = nodes(2:size(nodes,2)); %shrink nodes by 1
               if(size(nodes,2) == 0)
+                  obj.mode = obj.RETURN;
+                  obj.path = obj.findPathHome;
                   return; %there's nothing left for you here, adventurer
               end
             end
             obj.path = nodes(1).dirs;
         end
+        
+       function findPathHome(obj)
+            tempMap = obj.map; tempMap(obj.currentPos(1),obj.currentPos(2)) = obj.wall;
+            
+            startNode = {}; startNode.pos = [obj.currentPos(1),obj.currentPos(2)]; startNode.dirs = []; startNode.finished = 0;
+            nodes = startNode;
+                        
+            while nodes(1).pos ~=obj.motherPos
+              r = nodes(1).pos(1); c = nodes(1).pos(2); tempMap(r,c) = obj.wall; %set iteration vars
+              [nodes,tempMap] = obj.addPointsToQueue([r,c],nodes,tempMap);
+              nodes = nodes(2:size(nodes,2)); %shrink nodes by 1
+              if(size(nodes,2) == 0)
+                  return; %oh god you messed up, I dont know how you messed up this bad but you did
+              end
+            end
+            obj.path = nodes(1).dirs;
+        end
+        
         
         function [nodes,tempMap] = addPointsToQueue(obj,pos,nodes,tempMap)
             r = pos(1); c = pos(2);
@@ -150,56 +171,7 @@ classdef BOT < handle
             end
         end
         
-        function output = findPathHome(obj)
-            currx = obj.currentPos(1);
-            curry = obj.currentPos(2);
-            possPoints=[0;0;0];
-            currentPoint = obj.map(curry,currx);
-            x = currx;
-            y = curry;
-            currentDirection =0;
-            visited = [0;0;0];
-            tempMap = obj.map;
-            tempMap(y,x)=-1;
-            while currentPoint ~=-1
-                bounds = obj.checkBoundaries(x,y);
-               if bounds(4) && obj.map(y+1,x)~=obj.wall && tempMap(y+1,x) ~=2
-                   possPoints = [possPoints(:,1),[y+1;x;obj.DOWN],possPoints(:,2:end)];
-               end
-               if bounds(3) && obj.map(y-1,x)~=obj.wall && tempMap(y-1,x) ~=2
-                   possPoints = [possPoints(:,1),[y-1;x;obj.UP],possPoints(:,2:end)];
-               end
-               if bounds(2) &&obj.map(y,x+1)~=obj.wall && tempMap(y,x+1) ~=2
-                   possPoints = [possPoints(:,1),[y;x+1;obj.RIGHT],possPoints(:,2:end)];
-               end
-               if bounds(1) && obj.map(y,x-1)~=obj.wall&& tempMap(y,x-1) ~=2
-                   possPoints = [possPoints(:,1),[y;x-1;obj.LEFT],possPoints(:,2:end)];
-               end
-               if tempMap(x,y) ~=1
-                    visited = [visited,[y;x;currentDirection]];
-               end
-                newData = possPoints(:,end);
-                y = newData(1);
-                x = newData(2);
-                currentDirection = newData(3);
-                currentPoint = obj.map(y,x);
-                tempMap(y,x)=2;
-                possPoints = possPoints(:,1:end-1);
-            end
-            [vizX,vizY] = size(visited);
-            while x~=currx || y~=curry
-                [dx,dy] = obj.moveWay(currentDirection);
-                x = x+dx;
-                y = y+dy;
-                check = [ones(1,vizY).*y;ones(1,vizY).*x];
-                find((sum((visited(1:2,:) == check)) == 2) == 1)
-                currentDirection = visited(3,find((sum((visited(1:2,:) == check)) == 2) == 1));
-                obj.path = [dx,dy;obj.path];
-            end
-            obj.path =obj.path *-1;
-            obj.path = obj.path(2:end,:);
-            output = [-dx,-dy];
-        end
+        
         
         function moveWay(obj,dir)
             dr = 0; dc = 0;
