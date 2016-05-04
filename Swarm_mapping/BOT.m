@@ -106,7 +106,7 @@ classdef BOT < handle
               nodes = nodes(2:size(nodes,2)); %shrink nodes by 1
               if(size(nodes,2) == 0)
                   obj.mode = obj.RETURN;
-                  obj.path = obj.findPathHome;
+                  obj.findPathHome;
                   return; %there's nothing left for you here, adventurer
               end
             end
