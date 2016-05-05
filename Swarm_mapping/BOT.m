@@ -52,20 +52,20 @@ classdef BOT < handle
                     obj.path = obj.path(2:end);
                 case obj.INFORM
                     if isempty(obj.path)
-                        deltaPos = obj.findPathHome();
-                        obj.path = obj.path(2:end,:);
+                        obj.findPathHome();
+                        stepDir = obj.path(1);
+                        obj.path = obj.path(2:end);
                     else
-                        deltaPos = obj.path(1,:);
-                        obj.path = obj.path(2:end,:);
+                        stepDir = obj.path(1);
+                        obj.path = obj.path(2:end);
                     end
                     obj.broadcastMessage = 'FOUND_VICTIM';
                 case obj.RETURN
-                    size(obj.path)
                     if isempty(obj.path)
                         fprintf('made it home\n');
                     else
-                        deltaPos = obj.path(1,:);
-                        obj.path = obj.path(2:end,:);
+                        stepDir = obj.path(1);
+                        obj.path = obj.path(2:end);
                     end
                     obj.broadcastMessage = 'MAP_COMPLETE';
             end
