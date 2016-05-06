@@ -63,13 +63,14 @@ classdef BOT < handle
                 case obj.RETURN
                     if isempty(obj.path)
                         fprintf('made it home\n');
+                        return
                     else
                         stepDir = obj.path(1);
                         obj.path = obj.path(2:end);
                     end
                     obj.broadcastMessage = 'MAP_COMPLETE';
             end
-            obj.moveWay(stepDir);
+            obj.moveWay(stepDir,botList);
             obj.checkSurroundings(globalMap);
             obj.broadcast(botList);
         end
@@ -173,7 +174,7 @@ classdef BOT < handle
         
         
         
-        function moveWay(obj,dir)
+        function moveWay(obj,dir,botList)
             dr = 0; dc = 0;
             switch dir
                 case obj.LEFT
@@ -184,6 +185,12 @@ classdef BOT < handle
                     dr = -1;
                 case obj.DOWN
                     dr = 1;
+            end
+            for i=1:size(botList,2)
+                if(sum(botList(i).currentPos == [obj.currentPos(1)+dr,obj.currentPos(2)+dc]) == 2)
+                    obj.path = [];
+                    return %space is currently occupied by another bot
+                end
             end
             obj.currentPos = [obj.currentPos(1)+dr,obj.currentPos(2)+dc];
         end
