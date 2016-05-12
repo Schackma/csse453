@@ -5,6 +5,7 @@ classdef BOT < handle
         motherPos; currentPos;
         rows; cols;
         goalPos;
+        targetPos;
         map;
         com_range = 5;
         
@@ -37,10 +38,10 @@ classdef BOT < handle
             obj.motherPos =motherPos;
             obj.currentPos = [pos(2), pos(1)];
             
-            obj.checkSurroundings(toss_map);
+            obj.checkSurroundings(toss_map,[]);
        end
         
-        function obj = move(obj,globalMap,botList)
+        function obj = move(obj,globalMap,botList,targetList)
             switch obj.mode
                 case obj.EXPLORE
                     obj.broadcastMessage = 'SEARCHING';
@@ -52,9 +53,8 @@ classdef BOT < handle
                     obj.path = obj.path(2:end);
                 case obj.INFORM
                     if isempty(obj.path)
-                        obj.findPathHome();
-                        stepDir = obj.path(1);
-                        obj.path = obj.path(2:end);
+                        fprintf('made it home\n');
+                        return
                     else
                         stepDir = obj.path(1);
                         obj.path = obj.path(2:end);
@@ -70,8 +70,8 @@ classdef BOT < handle
                     end
                     obj.broadcastMessage = 'MAP_COMPLETE';
             end
-            obj.moveWay(stepDir,botList);
-            obj.checkSurroundings(globalMap);
+            obj.moveWay(stepDir,botList,globalMap);
+            obj.checkSurroundings(globalMap,targetList);
             obj.broadcast(botList);
         end
         
@@ -111,7 +111,7 @@ classdef BOT < handle
                   return; %there's nothing left for you here, adventurer
               end
             end
-            obj.path = nodes(1).dirs;
+            obj.path = nodes(1).dirs(1:end-1);
         end
         
        function findPathHome(obj)
@@ -174,7 +174,7 @@ classdef BOT < handle
         
         
         
-        function moveWay(obj,dir,botList)
+        function moveWay(obj,dir,botList,globalMap)
             dr = 0; dc = 0;
             switch dir
                 case obj.LEFT
@@ -192,10 +192,15 @@ classdef BOT < handle
                     return %space is currently occupied by another bot
                 end
             end
+            if globalMap(obj.currentPos(1)+dr,obj.currentPos(2)+dc) == obj.wall
+                fprintf('I just tried to move through a wall')
+                obj.path = [];
+                return
+            end
             obj.currentPos = [obj.currentPos(1)+dr,obj.currentPos(2)+dc];
         end
         
-        function obj = checkSurroundings(obj,globalMap)
+        function obj = checkSurroundings(obj,globalMap,targetList)
             r = obj.currentPos(1); c = obj.currentPos(2);
             bounds = obj.checkBoundaries(r,c);
             pointsToCheck = [r,c-1; r,c+1; r-1,c; r+1,c;];
@@ -207,6 +212,15 @@ classdef BOT < handle
                    else
                        obj.map(pointsToCheck(i,1),pointsToCheck(i,2)) = obj.visitedPoint;
                        obj.newFinds = [obj.newFinds, pointsToCheck(i,:)'];
+                   end
+                   if ~isempty(targetList)
+                       for j =1:size(targetList,1)
+                           if targetList(j,:)==pointsToCheck(i,:)
+                               obj.mode = obj.INFORM;
+                               obj.targetPos = targetList(j,:);
+                               findPathHome;
+                           end
+                       end
                    end
                end
             end
