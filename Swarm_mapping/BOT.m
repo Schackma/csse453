@@ -54,9 +54,10 @@ classdef BOT < handle
                 case obj.INFORM
                     if isempty(obj.path)
                         if sum(obj.currentPos==obj.motherPos)==2
-                            fprintf('made it home\n');
+                            fprintf('found a target and told mom\n');
+                            obj.mode = obj.EXPLORE;
                         else
-                            findPathHome;
+                            obj.findPathHome;
                         end
                         return
                     else
@@ -66,7 +67,11 @@ classdef BOT < handle
                     obj.broadcastMessage = 'FOUND_VICTIM';
                 case obj.RETURN
                     if isempty(obj.path)
-                        fprintf('made it home\n');
+                        if sum(obj.currentPos==obj.motherPos)==2
+                            fprintf('made it home\n');
+                        else
+                            obj.findPathHome;
+                        end
                         return
                     else
                         stepDir = obj.path(1);
