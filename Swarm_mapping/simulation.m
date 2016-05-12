@@ -12,7 +12,7 @@ classdef simulation < handle
         display_axes;
         
         bot_color = [160,32,240];
-        mothership_color = [160,32,240];
+        mothership_color = [65,105,225];
     end
     
     methods
