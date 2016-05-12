@@ -53,7 +53,11 @@ classdef BOT < handle
                     obj.path = obj.path(2:end);
                 case obj.INFORM
                     if isempty(obj.path)
-                        fprintf('made it home\n');
+                        if sum(obj.currentPos==obj.motherPos)==2
+                            fprintf('made it home\n');
+                        else
+                            findPathHome;
+                        end
                         return
                     else
                         stepDir = obj.path(1);
@@ -120,7 +124,7 @@ classdef BOT < handle
             startNode = {}; startNode.pos = [obj.currentPos(1),obj.currentPos(2)]; startNode.dirs = []; startNode.finished = 0;
             nodes = startNode;
                         
-            while nodes(1).pos ~=obj.motherPos
+            while sum(nodes(1).pos ==obj.motherPos)~=2
               r = nodes(1).pos(1); c = nodes(1).pos(2); tempMap(r,c) = obj.wall; %set iteration vars
               [nodes,tempMap] = obj.addPointsToQueue([r,c],nodes,tempMap);
               nodes = nodes(2:size(nodes,2)); %shrink nodes by 1
