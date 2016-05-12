@@ -10,6 +10,9 @@ classdef simulation < handle
         stepSize;
         numBots;
         display_axes;
+        
+        bot_color = [160,32,240];
+        mothership_color = [160,32,240];
     end
     
     methods
@@ -50,13 +53,16 @@ classdef simulation < handle
         function [] = draw(obj)
            obj.updateBackground();
            blackIndicies = find(obj.true_occupancy_grid == 1);          
-           r = floor(255*(obj.numBots - obj.background)/obj.numBots);
-           r(blackIndicies) = 0;
-           g = 255 - r(:,:,1);
-           g(blackIndicies) = 0;
-           img(:,:,1) = r; img(:,:,2) = g; img(:,:,3) = 0;           
+           r = floor(255*(obj.numBots - obj.background)/obj.numBots);  r(blackIndicies) = 0;
+           g = 255 - r(:,:,1); g(blackIndicies) = 0;
+           img(:,:,1) = uint8(r); img(:,:,2) = uint8(g); img(:,:,3) = uint8(0);           
            
-           img = insertShape(img, 'FilledCircle', [obj.mothership_loc(1) obj.mothership_loc(2) 5], 'Color', [0,0,255]);
+           for i = 1:obj.numBots %displaying robots
+                cp = obj.bot_list(i).currentPos;
+                img(cp(1),cp(2),:) = obj.bot_color;
+           end
+           img(obj.mothership_loc(1),obj.mothership_loc(2),:) = obj.mothership_color;
+           
            imshow(img, 'parent',obj.display_axes);
            set(obj.display_axes,'Visible','on');          
         end
