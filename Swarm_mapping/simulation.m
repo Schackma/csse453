@@ -42,6 +42,7 @@ classdef simulation < handle
         end
         
         function obj = addBot(obj,newBots)
+            newBots = obj.findValidPoints(newBots);
             obj.numBots=obj.numBots+size(newBots,1);
             for i = 1:size(newBots,1)
                bot = BOT(newBots(i,:),obj.mothership_loc,obj.true_occupancy_grid);
@@ -50,9 +51,28 @@ classdef simulation < handle
             obj.draw();
         end
         
-        function obj = addTarget(obj,newTargets)
+        function obj = addTarget(obj,newTargets) 
+           newTargets = obj.findValidPoints(newTargets);
            obj.target_list = [obj.target_list;newTargets];
            obj.draw();
+        end
+        
+        function validPoints = findValidPoints(obj,inArr)
+            validPoints = [];
+            for i=1:size(inArr,1)
+                if obj.withinBounds(inArr(i,:)) && obj.true_occupancy_grid(inArr(i,1),inArr(i,2)) == 0
+                    validPoints = [validPoints;inArr];
+                end
+            end
+        end
+        
+        function output = withinBounds(obj,inArr)
+           output = 1;
+           r = inArr(1); c= inArr(2);
+           [rows,cols] = size(obj.true_occupancy_grid);
+           if(c-1 <= 0 ||c+1 > cols || r-1 < 0 || r+1 > rows)
+                output = 0;
+           end
         end
         
         
@@ -92,7 +112,6 @@ classdef simulation < handle
         
         function [] = step(obj)
             for i = 1:obj.stepSize
-                obj.target_list
                 for j = 1:obj.numBots
                     obj.target_list =obj.bot_list(j).move(obj.true_occupancy_grid,obj.bot_list,obj.target_list);
                 end % bot looping
