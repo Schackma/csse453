@@ -6,6 +6,7 @@ classdef BOT < handle
         rows; cols;
         goalPos;
         targetPos;
+        targetsFound
         map;
         com_range = 5;
         
@@ -37,6 +38,7 @@ classdef BOT < handle
 
             obj.motherPos =motherPos;
             obj.currentPos = [pos(2), pos(1)];
+            obj.targetsFound = obj.motherPos; % need a point to prevent out of bounds errors
             
             obj.checkSurroundings(toss_map,[]);
        end
@@ -56,19 +58,7 @@ classdef BOT < handle
                         if sum(obj.currentPos==obj.motherPos)==2
                             fprintf('found a target and told mom\n');
                             obj.mode = obj.EXPLORE;
-                            for i=1:size(targetList,1)
-                                if sum(targetList(i,:) == obj.targetPos)==2
-                                    if i~=1 && i~=size(targetList,1)
-                                        targetList = [targetList(i-1,:);targetList(i+1,:)];
-                                    elseif i==1 && i==size(targetList,1)
-                                        targetList = [];
-                                    elseif i==1
-                                        targetList = targetList(2,:);
-                                    else
-                                        targetList = targetList(1:end-1,:);
-                                    end
-                                end
-                            end
+                            targetList = targetList(~ismember(targetList,obj.targetPos,'rows'),:);
                         else
                             obj.findPathHome;
                         end
@@ -100,17 +90,34 @@ classdef BOT < handle
         function broadcast(obj,botList)
             for i = 1:size(botList,2)
                 if(botList(i) ~=obj && obj.dist(botList(i).currentPos))
-                new_map = obj.map+botList(i).map;
-                new_map(new_map > 0) = 1;
-                new_map(new_map < 0) = -1;
-                [rowIs colIs] = find(abs(obj.map)-abs(new_map) ~= 0);
-                obj.newFinds = [obj.newFinds, [rowIs' ; colIs']];
-                obj.map = new_map;
-                [rowIs colIs] = find(abs(botList(i).map)-abs(new_map) ~= 0);
-                botList(i).newFinds = [botList(i).newFinds, [rowIs' ; colIs']];
-                botList(i).map = new_map;
+                    new_map = obj.map+botList(i).map;
+                    new_map(new_map > 0) = 1;
+                    new_map(new_map < 0) = -1;
+                    [rowIs colIs] = find(abs(obj.map)-abs(new_map) ~= 0);
+                    obj.newFinds = [obj.newFinds, [rowIs' ; colIs']];
+                    obj.map = new_map;
+                    [rowIs colIs] = find(abs(botList(i).map)-abs(new_map) ~= 0);
+                    botList(i).newFinds = [botList(i).newFinds, [rowIs' ; colIs']];
+                    botList(i).map = new_map;
+                    
+                    if obj.mode == obj.INFORM && sum(sum(ismember(botList(i).targetsFound,obj.targetPos,'rows')))~=1
+                        botList(i).targetsFound = [botList(i).targetsFound;obj.targetPos];
+                        tempPath = botList(i).path; botList(i).findPathHome;
+                        if size(botList(i).path,2)< size(obj.path,2)
+                            botList(i).mode = obj.INFORM;
+                            botList(i).targetPos = obj.targetPos;
+                            
+                            obj.targetPos = [];
+                            obj.path = [];
+                            obj.mode = obj.EXPLORE;
+                            obj.findPath;
+                        else
+                            botList(i).path = tempPath;
+                        end
+                    end
                 end
             end
+            
             if obj.mode == obj.EXPLORE && obj.map(obj.goalPos(1),obj.goalPos(2)) ~=obj.unexplored
                 obj.path = [];
             end
@@ -247,6 +254,7 @@ classdef BOT < handle
                            if targetList(j,:)==pointsToCheck(i,:)
                                obj.mode = obj.INFORM;
                                obj.targetPos = targetList(j,:);
+                               obj.targetsFound = [obj.targetsFound;obj.targetPos];
                                obj.findPathHome;
                            end
                        end

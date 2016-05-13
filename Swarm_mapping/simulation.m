@@ -3,7 +3,7 @@ classdef simulation < handle
     
     properties
         bot_list;
-        target_list = [10,10]
+        target_list = [10,10] 
         true_occupancy_grid;
         background;
         mothership_loc;
