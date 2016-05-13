@@ -14,6 +14,7 @@ classdef simulation < handle
         
         bot_color = [160,32,240];
         mothership_color = [65,105,225];
+        target_color = [255,255,0];
     end
     
     methods
@@ -64,6 +65,11 @@ classdef simulation < handle
            end
            img(obj.mothership_loc(1),obj.mothership_loc(2),:) = obj.mothership_color; %displaying home
            
+           
+           for i = 1:size(obj.target_list,1);
+               cp = obj.target_list(i,:);
+               img(cp(1),cp(2),:) = obj.target_color;
+           end
            
            imshow(img, 'parent',obj.display_axes);
            set(obj.display_axes,'Visible','on');          
