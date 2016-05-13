@@ -3,6 +3,7 @@ classdef simulation < handle
     
     properties
         bot_list;
+        target_list = [10,10]
         true_occupancy_grid;
         background;
         mothership_loc;
@@ -70,8 +71,9 @@ classdef simulation < handle
         function [] = step(obj)
             for i = 1:obj.stepSize
                 i
+                obj.target_list
                 for j = 1:obj.numBots
-                    obj.bot_list(j).move(obj.true_occupancy_grid,obj.bot_list,[]);
+                    obj.target_list =obj.bot_list(j).move(obj.true_occupancy_grid,obj.bot_list,obj.target_list);
                 end % bot looping
                 obj.draw();
                 drawnow;

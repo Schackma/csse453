@@ -41,7 +41,7 @@ classdef BOT < handle
             obj.checkSurroundings(toss_map,[]);
        end
         
-        function obj = move(obj,globalMap,botList,targetList)
+        function targetList = move(obj,globalMap,botList,targetList)
             switch obj.mode
                 case obj.EXPLORE
                     obj.broadcastMessage = 'SEARCHING';
@@ -56,6 +56,19 @@ classdef BOT < handle
                         if sum(obj.currentPos==obj.motherPos)==2
                             fprintf('found a target and told mom\n');
                             obj.mode = obj.EXPLORE;
+                            for i=1:size(targetList,1)
+                                if sum(targetList(i,:) == obj.targetPos)==2
+                                    if i~=1 && i~=size(targetList,1)
+                                        targetList = [targetList(i-1,:);targetList(i+1,:)];
+                                    elseif i==1 && i==size(targetList,1)
+                                        targetList = [];
+                                    elseif i==1
+                                        targetList = targetList(2,:);
+                                    else
+                                        targetList = targetList(1:end-1,:);
+                                    end
+                                end
+                            end
                         else
                             obj.findPathHome;
                         end
@@ -98,6 +111,10 @@ classdef BOT < handle
                 botList(i).map = new_map;
                 end
             end
+            if obj.mode == obj.SEARCH && obj.map(obj.goalPos(1),obj.goalPos(2)) ~=obj.unexplored
+                obj.path = [];
+            end
+            
         end
         
         function output = dist(obj,otherPos)
@@ -121,10 +138,12 @@ classdef BOT < handle
               end
             end
             obj.path = nodes(1).dirs(1:end-1);
+            obj.goalPos = nodes(1).pos;
         end
         
        function findPathHome(obj)
             tempMap = obj.map; tempMap(obj.currentPos(1),obj.currentPos(2)) = obj.wall;
+            tempMap(find(tempMap==0))=1; %only go through explored paths
             
             startNode = {}; startNode.pos = [obj.currentPos(1),obj.currentPos(2)]; startNode.dirs = []; startNode.finished = 0;
             nodes = startNode;
@@ -138,6 +157,7 @@ classdef BOT < handle
               end
             end
             obj.path = nodes(1).dirs;
+            obj.goalPos = nodes(1).pos;
         end
         
         
@@ -227,7 +247,7 @@ classdef BOT < handle
                            if targetList(j,:)==pointsToCheck(i,:)
                                obj.mode = obj.INFORM;
                                obj.targetPos = targetList(j,:);
-                               findPathHome;
+                               obj.findPathHome;
                            end
                        end
                    end
