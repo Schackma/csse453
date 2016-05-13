@@ -237,3 +237,4 @@ function add_entity_group_SelectionChangedFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+function num_bots_edit_Callback(hObject, eventdata, handles)
