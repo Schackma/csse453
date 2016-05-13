@@ -111,7 +111,7 @@ classdef BOT < handle
                 botList(i).map = new_map;
                 end
             end
-            if obj.mode == obj.SEARCH && obj.map(obj.goalPos(1),obj.goalPos(2)) ~=obj.unexplored
+            if obj.mode == obj.EXPLORE && obj.map(obj.goalPos(1),obj.goalPos(2)) ~=obj.unexplored
                 obj.path = [];
             end
             
