@@ -217,11 +217,10 @@ function pushbutton_add_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_add (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-floor(ginput)
 switch get(get(handles.add_entity_group,'SelectedObject'),'Tag')
     case 'radiobutton_BOT'
-        'clicked bot'
+        handles.user.simulation.addBot(floor(ginput));
     case 'radiobutton_target'
-        'clicked target'
+        handles.user.simulation.addTarget(floor(ginput));
 end
 

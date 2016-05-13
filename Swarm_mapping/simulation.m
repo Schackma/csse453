@@ -41,6 +41,21 @@ classdef simulation < handle
             obj.draw();
         end
         
+        function obj = addBot(obj,newBots)
+            obj.numBots=obj.numBots+size(newBots,1);
+            for i = 1:size(newBots,1)
+               bot = BOT(newBots(i,:),obj.mothership_loc,obj.true_occupancy_grid);
+               obj.bot_list = [obj.bot_list,bot];
+            end
+            obj.draw();
+        end
+        
+        function obj = addTarget(obj,newTargets)
+           obj.target_list = [obj.target_list;newTargets];
+           obj.draw();
+        end
+        
+        
         function [] = updateBackground(obj)
           newFinds = [];
            for i = 1:obj.numBots
