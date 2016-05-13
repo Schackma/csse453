@@ -238,7 +238,7 @@ classdef BOT < handle
                if bounds(i)
                    if globalMap(pointsToCheck(i,1),pointsToCheck(i,2)) == obj.wall
                        obj.map(pointsToCheck(i,1),pointsToCheck(i,2)) = obj.wall;
-                   else
+                   elseif(obj.map(pointsToCheck(i,1),pointsToCheck(i,2))) == obj.unexplored
                        obj.map(pointsToCheck(i,1),pointsToCheck(i,2)) = obj.visitedPoint;
                        obj.newFinds = [obj.newFinds, pointsToCheck(i,:)'];
                    end
