@@ -37,7 +37,7 @@ classdef BOT < handle
             obj.mode = obj.EXPLORE;
 
             obj.motherPos =motherPos;
-            obj.currentPos = [pos(2), pos(1)];
+            obj.currentPos = pos;
             obj.targetsFound = obj.motherPos; % need a point to prevent out of bounds errors
             
             obj.checkSurroundings(toss_map,[]);

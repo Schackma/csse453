@@ -22,7 +22,7 @@ function varargout = simulation_runner(varargin)
 
 % Edit the above text to modify the response to help simulation_runner
 
-% Last Modified by GUIDE v2.5 13-May-2016 12:49:53
+% Last Modified by GUIDE v2.5 13-May-2016 13:12:39
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -217,10 +217,23 @@ function pushbutton_add_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_add (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+toSend = floor(ginput);
+tmp = toSend(:,2);
+toSend(:,2) = toSend(:,1);
+toSend(:,1) = tmp;
+
 switch get(get(handles.add_entity_group,'SelectedObject'),'Tag')
     case 'radiobutton_BOT'
-        handles.user.simulation.addBot(floor(ginput));
+        handles.user.simulation.addBot(toSend);
     case 'radiobutton_target'
-        handles.user.simulation.addTarget(floor(ginput));
+        handles.user.simulation.addTarget(toSend);
 end
+
+
+
+% --- Executes when selected object is changed in add_entity_group.
+function add_entity_group_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in add_entity_group 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
