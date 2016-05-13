@@ -22,7 +22,7 @@ function varargout = simulation_runner(varargin)
 
 % Edit the above text to modify the response to help simulation_runner
 
-% Last Modified by GUIDE v2.5 17-Apr-2016 23:11:19
+% Last Modified by GUIDE v2.5 13-May-2016 12:49:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -156,6 +156,9 @@ set(handles.map_path_pushbutton, 'enable', 'off');
 set(handles.step_pushbutton, 'enable', 'on');
 set(handles.step_edit, 'enable', 'on');
 set(handles.sleep_edit, 'enable', 'on');
+set(handles.pushbutton_add, 'enable', 'on');
+set(handles.radiobutton_BOT, 'enable', 'on');
+set(handles.radiobutton_target, 'enable', 'on');
 
 handles.user.simulation = simulation(handles);
 guidata(hObject, handles);
@@ -209,5 +212,16 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-function num_bots_edit_Callback(hObject, eventdata, handles)
-return;
+% --- Executes on button press in pushbutton_add.
+function pushbutton_add_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_add (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+floor(ginput)
+switch get(get(handles.add_entity_group,'SelectedObject'),'Tag')
+    case 'radiobutton_BOT'
+        'clicked bot'
+    case 'radiobutton_target'
+        'clicked target'
+end
+

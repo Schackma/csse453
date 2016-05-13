@@ -101,8 +101,7 @@ classdef BOT < handle
             for i = 1:size(botList,2)
                 if(botList(i) ~=obj && obj.dist(botList(i).currentPos))
                 new_map = obj.map+botList(i).map;
-                new_map(new_map > 0) = 1;
-                new_map(new_map < 0) = -1;
+                new_map(new_map > 0) = 1; new_map(new_map < 0) = -1;
                 [rowIs colIs] = find(abs(obj.map)-abs(new_map) ~= 0);
                 obj.newFinds = [obj.newFinds, [rowIs' ; colIs']];
                 obj.map = new_map;

@@ -3,7 +3,7 @@ classdef simulation < handle
     
     properties
         bot_list;
-        target_list = [10,10]
+        target_list = [];%[10,10]
         true_occupancy_grid;
         background;
         mothership_loc;
@@ -62,7 +62,8 @@ classdef simulation < handle
                 cp = obj.bot_list(i).currentPos;
                 img(cp(1),cp(2),:) = obj.bot_color;
            end
-           img(obj.mothership_loc(1),obj.mothership_loc(2),:) = obj.mothership_color;
+           img(obj.mothership_loc(1),obj.mothership_loc(2),:) = obj.mothership_color; %displaying home
+           
            
            imshow(img, 'parent',obj.display_axes);
            set(obj.display_axes,'Visible','on');          
@@ -70,14 +71,13 @@ classdef simulation < handle
         
         function [] = step(obj)
             for i = 1:obj.stepSize
-                i
                 obj.target_list
                 for j = 1:obj.numBots
                     obj.target_list =obj.bot_list(j).move(obj.true_occupancy_grid,obj.bot_list,obj.target_list);
                 end % bot looping
                 obj.draw();
                 drawnow;
-            end % step looping            
+            end % step looping   
         end % step functoin
     end % method definitions
 end % function definition
