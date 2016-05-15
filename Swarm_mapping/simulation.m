@@ -3,7 +3,7 @@ classdef simulation < handle
     
     properties
         bot_list;
-        target_list = [];%[10,10]
+        target_list = [10,10];
         true_occupancy_grid;
         background;
         mothership_loc;
@@ -34,7 +34,7 @@ classdef simulation < handle
             
             obj.bot_list = [];
             for i = 1:obj.numBots
-                bot = BOT(obj.mothership_loc,obj.mothership_loc,obj.true_occupancy_grid);
+                bot = BOT(obj.mothership_loc,obj.mothership_loc,obj.true_occupancy_grid,obj.target_list);
                 obj.bot_list = [obj.bot_list, bot];
             end
             
