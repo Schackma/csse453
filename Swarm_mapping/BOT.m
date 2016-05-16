@@ -65,6 +65,7 @@ classdef BOT < handle
                             targetList = targetList(~ismember(targetList,obj.targetPos,'rows'),:);
                             obj.targetPos = [];
                         else
+                            fprintf('something went wrong');
                             obj.findPathHome;
                         end
                         return
@@ -246,56 +247,33 @@ classdef BOT < handle
             r = pos(1); c = pos(2);
             
             obj.targetPos = [obj.targetPos;targetList(ismember(targetList,pos,'rows'),:)];
-            if(~isempty(obj.targetPos))
+            if(~isempty(obj.targetPos) && obj.mode ~=obj.INFORM)
                obj.mode = obj.INFORM;
                obj.findPathHome;
             end
             
-            tempMap(r,c) = obj.wall;
+            tempMap(r,c) = vision;
             
             if globalMap(r,c) == obj.wall
-                obj.map(r,c) = obj.wall;
+                obj.map(r,c) = obj.wall; %break if we see a wall
                 return;
             elseif obj.map(r,c) == obj.unexplored
                 obj.map(r,c) = obj.visitedPoint;
                 obj.newFinds = [obj.newFinds, pos'];
             end
             
-            if vision == 0
+            if vision == 0 %break case
                 return
             end 
             
             bounds = obj.checkBoundaries(r,c);
             pointsToCheck = [r,c-1; r,c+1; r-1,c; r+1,c;];
             for i=1:4
-                if bounds(i) && tempMap(pointsToCheck(i,1),pointsToCheck(i,2))~=obj.wall
+                if bounds(i) && tempMap(pointsToCheck(i,1),pointsToCheck(i,2)) < vision
                     tempMap = obj.checkSurroundings(globalMap,targetList, vision-1,...
                         [pointsToCheck(i,1),pointsToCheck(i,2)],tempMap);
                 end
             end
-            
-            
-%             
-%             for i = 1:4
-%                if bounds(i)
-%                    if globalMap(pointsToCheck(i,1),pointsToCheck(i,2)) == obj.wall
-%                        obj.map(pointsToCheck(i,1),pointsToCheck(i,2)) = obj.wall;
-%                    elseif(obj.map(pointsToCheck(i,1),pointsToCheck(i,2))) == obj.unexplored
-%                        obj.map(pointsToCheck(i,1),pointsToCheck(i,2)) = obj.visitedPoint;
-%                        obj.newFinds = [obj.newFinds, pointsToCheck(i,:)'];
-%                    end
-%                    if ~isempty(targetList)
-%                        for j =1:size(targetList,1)
-%                            if targetList(j,:)==pointsToCheck(i,:)
-%                                obj.mode = obj.INFORM;
-%                                obj.targetPos = targetList(j,:);
-%                                obj.targetsFound = [obj.targetsFound;obj.targetPos];
-%                                obj.findPathHome;
-%                            end
-%                        end
-%                    end
-%                end
-%             end
         end
     end
 end
