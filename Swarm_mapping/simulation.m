@@ -12,7 +12,6 @@ classdef simulation < handle
         numBots;
         display_axes;
         
-        totSteps = 0;
         bot_color = [160,32,240];
         mothership_color = [65,105,225];
         target_color = [255,255,0];
@@ -116,9 +115,8 @@ classdef simulation < handle
         
         function [] = step(obj)
             for i = 1:obj.stepSize
-                obj.totSteps = obj.totSteps + 1;
                 for j = 1:obj.numBots
-                    obj.target_list =obj.bot_list(j).move(obj.true_occupancy_grid,obj.bot_list,obj.target_list,obj.totSteps);
+                    obj.target_list =obj.bot_list(j).move(obj.true_occupancy_grid,obj.bot_list,obj.target_list);
                 end % bot looping
                 
                 %frameDisp
