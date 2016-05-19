@@ -38,6 +38,7 @@ classdef simulation < handle
                 obj.bot_list = [obj.bot_list, bot];
             end
             
+            obj.updateBotparams(str2num(get(handles.perception_edit,'string')),str2num(get(handles.communication_edit,'string')));
             obj.draw();
         end
         
@@ -48,6 +49,8 @@ classdef simulation < handle
                bot = BOT(newBots(i,:),obj.mothership_loc,obj.true_occupancy_grid,obj.target_list);
                obj.bot_list = [obj.bot_list,bot];
             end
+            
+            obj.updateBotparams(str2num(get(handles.perception_edit,'string')),str2num(get(handles.communication_edit,'string')));
             obj.draw();
         end
         
@@ -124,6 +127,13 @@ classdef simulation < handle
             end % step looping 
             obj.draw(); drawnow;
         end % step function
+        
+        function [] = updateBotparams(obj,perceptionDist,communicationDist)
+           for i = 1:obj.numBots
+               obj.bot_list(i).com_range = communicationDist;
+               obj.bot_list(i).vision_range = perceptionDist;
+           end
+        end %update bot params function
     end % method definitions
 end % function definition
 

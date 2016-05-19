@@ -22,7 +22,7 @@ function varargout = simulation_runner(varargin)
 
 % Edit the above text to modify the response to help simulation_runner
 
-% Last Modified by GUIDE v2.5 13-May-2016 13:12:39
+% Last Modified by GUIDE v2.5 19-May-2016 01:05:45
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -238,3 +238,69 @@ function add_entity_group_SelectionChangedFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 function num_bots_edit_Callback(hObject, eventdata, handles)
+
+
+
+function perception_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to perception_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.user.simulation.updateBotparams(str2num(get(handles.perception_edit,'string')),str2num(get(handles.communication_edit,'string')));
+
+
+
+% --- Executes during object creation, after setting all properties.
+function perception_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to perception_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function communication_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to communication_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.user.simulation.updateBotparams(str2num(get(handles.perception_edit,'string')),str2num(get(handles.communication_edit,'string')));
+
+% --- Executes during object creation, after setting all properties.
+function communication_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to communication_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit_color_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_color (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_color as text
+%        str2double(get(hObject,'String')) returns contents of edit_color as a double
+handles.user.simulation.bot_color = str2num(get(hObject,'string'));
+handles.user.simulation.draw();
+
+% --- Executes during object creation, after setting all properties.
+function edit_color_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_color (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
