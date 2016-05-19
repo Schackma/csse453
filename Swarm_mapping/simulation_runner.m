@@ -198,7 +198,7 @@ function sleep_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of sleep_edit as text
 %        str2double(get(hObject,'String')) returns contents of sleep_edit as a double
-handles.user.simulation.stepDelay = str2num(get(hObject,'string'));
+handles.user.simulation.frameDisp = str2num(get(hObject,'string'));
 
 % --- Executes during object creation, after setting all properties.
 function sleep_edit_CreateFcn(hObject, eventdata, handles)

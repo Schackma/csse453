@@ -7,7 +7,7 @@ classdef simulation < handle
         true_occupancy_grid;
         background;
         mothership_loc;
-        stepDelay;
+        frameDisp;
         stepSize;
         numBots;
         display_axes;
@@ -21,7 +21,7 @@ classdef simulation < handle
         function obj = simulation(handles)       
             obj.mothership_loc = str2num(get(handles.start_loc_edit,'string'));
             obj.stepSize = str2num(get(handles.step_edit,'string'));
-            obj.stepDelay = str2num(get(handles.sleep_edit,'string'));
+            obj.frameDisp = str2num(get(handles.sleep_edit,'string'));
             obj.numBots = str2num(get(handles.num_bots_edit,'string'));
             obj.display_axes = handles.display_axes;
             
@@ -45,7 +45,7 @@ classdef simulation < handle
             newBots = obj.findValidPoints(newBots);
             obj.numBots=obj.numBots+size(newBots,1);
             for i = 1:size(newBots,1)
-               bot = BOT(newBots(i,:),obj.mothership_loc,obj.true_occupancy_grid);
+               bot = BOT(newBots(i,:),obj.mothership_loc,obj.true_occupancy_grid,obj.target_list);
                obj.bot_list = [obj.bot_list,bot];
             end
             obj.draw();
@@ -61,7 +61,7 @@ classdef simulation < handle
             validPoints = [];
             for i=1:size(inArr,1)
                 if obj.withinBounds(inArr(i,:)) && obj.true_occupancy_grid(inArr(i,1),inArr(i,2)) == 0
-                    validPoints = [validPoints;inArr];
+                    validPoints = [validPoints;inArr(i,:)];
                 end
             end
         end
@@ -115,10 +115,15 @@ classdef simulation < handle
                 for j = 1:obj.numBots
                     obj.target_list =obj.bot_list(j).move(obj.true_occupancy_grid,obj.bot_list,obj.target_list);
                 end % bot looping
-                obj.draw();
-                drawnow;
-            end % step looping   
-        end % step functoin
+                
+                %frameDisp
+                skip = obj.frameDisp == -1;
+                if(~skip && mod(i,obj.frameDisp)==0)
+                    obj.draw(); drawnow;
+                end
+            end % step looping 
+            obj.draw(); drawnow;
+        end % step function
     end % method definitions
 end % function definition
 
