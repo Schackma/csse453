@@ -47,7 +47,7 @@ classdef BOT < handle
             obj.checkSurroundings(toss_map,targetList,obj.vision_range,obj.currentPos,zeros(size(toss_map)));
        end
         
-        function targetList = move(obj,globalMap,botList,targetList)
+        function targetList = move(obj,globalMap,botList,targetList,iteration)
             switch obj.mode
                 case obj.EXPLORE
                     obj.broadcastMessage = 'SEARCHING';
@@ -78,6 +78,9 @@ classdef BOT < handle
                     if isempty(obj.path)
                         if sum(obj.currentPos==obj.motherPos)==2
                             fprintf('made it home\n');
+                            while(1)
+                                iteration
+                            end
                         else
                             obj.findPathHome;
                         end
@@ -246,7 +249,9 @@ classdef BOT < handle
         function tempMap = checkSurroundings(obj,globalMap,targetList,vision,pos,tempMap)
             r = pos(1); c = pos(2);
             
-            obj.targetPos = [obj.targetPos;targetList(ismember(targetList,pos,'rows'),:)];
+            if(~isempty(targetList))
+                obj.targetPos = [obj.targetPos;targetList(ismember(targetList,pos,'rows'),:)];
+            end
             if(~isempty(obj.targetPos) && obj.mode ~=obj.INFORM)
                obj.mode = obj.INFORM;
                obj.findPathHome;

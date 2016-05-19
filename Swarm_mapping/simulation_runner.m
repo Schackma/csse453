@@ -22,7 +22,7 @@ function varargout = simulation_runner(varargin)
 
 % Edit the above text to modify the response to help simulation_runner
 
-% Last Modified by GUIDE v2.5 19-May-2016 01:05:45
+% Last Modified by GUIDE v2.5 19-May-2016 01:34:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -224,7 +224,7 @@ toSend(:,1) = tmp;
 
 switch get(get(handles.add_entity_group,'SelectedObject'),'Tag')
     case 'radiobutton_BOT'
-        handles.user.simulation.addBot(toSend);
+        handles.user.simulation.addBot(toSend,handles);
     case 'radiobutton_target'
         handles.user.simulation.addTarget(toSend);
 end
@@ -281,8 +281,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
-
 function edit_color_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_color (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -304,3 +302,23 @@ function edit_color_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushbutton_reset.
+function pushbutton_reset_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_reset (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.user.simulation = simulation(handles);
+set(handles.start_button, 'enable', 'on');
+set(handles.num_bots_edit, 'enable', 'on');
+set(handles.map_path_edit, 'enable', 'on');
+set(handles.start_loc_edit, 'enable', 'on');
+set(handles.map_path_pushbutton, 'enable', 'on');
+
+set(handles.step_pushbutton, 'enable', 'off');
+set(handles.step_edit, 'enable', 'off');
+set(handles.sleep_edit, 'enable', 'off');
+set(handles.pushbutton_add, 'enable', 'off');
+set(handles.radiobutton_BOT, 'enable', 'off');
+set(handles.radiobutton_target, 'enable', 'off');
